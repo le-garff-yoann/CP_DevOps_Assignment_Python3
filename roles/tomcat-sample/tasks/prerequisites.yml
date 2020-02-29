@@ -1,0 +1,6 @@
+---
+- name: Installing pip packages
+  pip:
+    name:
+      - docker
+      - pytest

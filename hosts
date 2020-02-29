@@ -1,0 +1,5 @@
+[tomcat-sample-servers]
+localhost ansible_connection=local
+
+[tomcat-sample-servers:vars]
+ansible_python_interpreter=python3

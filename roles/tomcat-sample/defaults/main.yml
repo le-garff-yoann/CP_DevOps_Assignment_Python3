@@ -1,0 +1,12 @@
+---
+tomcat_sample_install_prereqs: yes
+tomcat_sample_docker_buildarg_base_image: tomcat:9-jdk11-openjdk-slim
+tomcat_sample_docker_buildarg_war_url: https://tomcat.apache.org/tomcat-9.0-doc/appdev/sample/sample.war
+tomcat_sample_docker_buildarg_webapps_path: /usr/local/tomcat/webapps
+tomcat_sample_docker_buildarg_war_name: sample
+tomcat_sample_docker_image_name_tag: "{{ role_name }}:latest"
+tomcat_sample_docker_container_name: "{{ role_name }}"
+tomcat_sample_docker_container_host_port: "8080"
+tomcat_sample_pytest_health_script_basename: test_health.py
+tomcat_sample_deployment_check_retries: 10
+tomcat_sample_deployment_check_delay: 3

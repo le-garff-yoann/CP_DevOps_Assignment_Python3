@@ -1,0 +1,39 @@
+---
+- name: Install prerequisites
+  include_tasks: prerequisites.yml
+  when: tomcat_sample_install_prereqs
+
+- name: Create temporary directory
+  tempfile:
+    state: directory
+  changed_when: False
+  register: temp_dir
+
+- name: Copy {{ role_path }}/{{ tomcat_sample_pytest_health_script_basename }} to {{ temp_dir.path }}
+  copy:
+    src: "{{ tomcat_sample_pytest_health_script_basename }}"
+    dest: "{{ temp_dir.path }}/{{ tomcat_sample_pytest_health_script_basename }}"
+  changed_when: False
+
+- name: Determine the full path of {{ tomcat_sample_pytest_health_script_basename }}
+  set_fact:
+    test_health_cmd: >
+      PYTEST_BASE_URL='http://localhost:{{ tomcat_sample_docker_container_host_port }}/{{ tomcat_sample_docker_buildarg_war_name }}'
+      PYTEST_BODY_IN='Sample "Hello, World" Application'
+      pytest '{{ temp_dir.path }}/{{ tomcat_sample_pytest_health_script_basename }}'
+
+- name: Check the application health # noqa 305
+  shell: "{{ test_health_cmd }}"
+  failed_when: False
+  changed_when: False
+  register: res_healthy
+
+- name: Deploy the application
+  include_tasks: deploy.yml
+  when: res_healthy.rc != 0
+
+- name: Delete the temporary directory
+  file:
+    state: absent
+    path: "{{ temp_dir.path }}"
+  changed_when: False

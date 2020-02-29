@@ -1,0 +1,5 @@
+---
+- hosts: tomcat-sample-servers
+  become: yes
+  roles:
+    - tomcat-sample

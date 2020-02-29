@@ -1,0 +1,44 @@
+---
+stages:
+  - lint
+  - test
+
+variables:
+  MOLECULE_IMAGE: registry.gitlab.com/le-garff-yoann/docker-molecule:2.22-2.9.5-1.0.2
+
+lint:yaml:
+  stage: lint
+  image: $MOLECULE_IMAGE
+  script:
+    - yamllint .
+
+lint:python:
+  stage: lint
+  image: $MOLECULE_IMAGE
+  script:
+    - flake8 .
+
+lint:ansible:
+  stage: lint
+  image: $MOLECULE_IMAGE
+  script:
+    - ansible-lint site.yml
+
+test:roles:molecule:
+  stage: test
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker pull $MOLECULE_IMAGE
+    - >
+      docker create
+      --name $CI_JOB_ID
+      --rm
+      -v /var/run/docker.sock:/var/run/docker.sock
+      -v /sys/fs/cgroup:/sys/fs/cgroup:ro
+      --privileged --cap-add SYS_ADMIN
+      $MOLECULE_IMAGE
+      sh -c 'cd /t && . helpers.sh && roles_run_molecule test'
+    - docker cp . $CI_JOB_ID:/t
+    - docker start -i $CI_JOB_ID

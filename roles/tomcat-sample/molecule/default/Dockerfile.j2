@@ -1,0 +1,27 @@
+# Molecule managed
+
+{% if item.registry is defined %}
+FROM {{ item.registry.url }}/{{ item.image }}
+{% else %}
+FROM {{ item.image }}
+{% endif %}
+
+{% if item.env is defined %}
+{% for var, value in item.env.items() %}
+{% if value %}
+ENV {{ var }} {{ value }}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if 'ubuntu:19' in item.image %}
+RUN \
+    apt-get update && \
+    apt-get install -y curl gnupg && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $UBUNTU_RELEASE_CODE_NAME stable" > /etc/apt/sources.list.d/docker-ce.list && \
+    apt-get install -y init docker.io python3 python3-pip sudo bash ca-certificates iproute2 && \
+    apt-get clean && \
+    systemctl enable docker && \
+    echo '{"storage-driver": "vfs"}' > /etc/docker/daemon.json
+{% endif %}

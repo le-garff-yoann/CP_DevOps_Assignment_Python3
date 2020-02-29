@@ -1,0 +1,35 @@
+---
+- name: Copy {{ role_path }}/Dockerfile to {{ temp_dir.path }}
+  copy:
+    src: Dockerfile
+    dest: "{{ temp_dir.path }}/Dockerfile"
+  changed_when: False
+
+- name: Build the image {{ tomcat_sample_docker_image_name_tag }}
+  docker_image:
+    name: "{{ tomcat_sample_docker_image_name_tag }}"
+    force_source: yes
+    source: build
+    build:
+      path: "{{ temp_dir.path }}"
+      pull: yes
+      args:
+        base_image: "{{ tomcat_sample_docker_buildarg_base_image }}"
+        war_url: "{{ tomcat_sample_docker_buildarg_war_url }}"
+        webapps_path: "{{ tomcat_sample_docker_buildarg_webapps_path }}"
+        war_name: "{{ tomcat_sample_docker_buildarg_war_name }}"
+
+- name: Run the image {{ tomcat_sample_docker_image_name_tag }} as a container named {{ tomcat_sample_docker_container_name }}
+  docker_container:
+    name: "{{ tomcat_sample_docker_container_name }}"
+    image: "{{ tomcat_sample_docker_image_name_tag }}"
+    ports:
+      - "{{ tomcat_sample_docker_container_host_port }}:8080"
+
+- name: Wait {{ tomcat_sample_deployment_check_retries * tomcat_sample_deployment_check_delay }} seconds until the application is healthy # noqa 305
+  shell: "{{ test_health_cmd }} "
+  retries: "{{ tomcat_sample_deployment_check_retries }}"
+  delay: "{{ tomcat_sample_deployment_check_delay }}"
+  register: res_healthy
+  until: res_healthy.rc == 0
+  changed_when: False
