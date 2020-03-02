@@ -48,7 +48,7 @@ It starts with `pycheck` and implements two tests:
 This role is tested via [Molecule](https://molecule.readthedocs.io/en/2.22) against a Docker image generated in accordance with the content of `meta/`.
 An idempotency test is part of the `default` scenario.
 
-The launch of these tests is documented [here](README#via-molecule-and-docker).
+The launch of these tests is documented [here](README.md#via-molecule-and-docker).
 
 ## Playbooks
 
