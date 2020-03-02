@@ -36,12 +36,12 @@ This file is responsible for launching:
 This script is used as a health check against a running "Tomcat Sample Application".
 
 It requires the passage of two values ​​through environment variables:
-- `PYCHECK_BASE_URL`.
+- `PYTEST_BASE_URL`.
 - `PYTEST_BODY_IN`.
 
 It starts with `pycheck` and implements two tests:
-- HTTP GET on `PYCHECK_BASE_URL` must return with status code equal to 200.
-- the character string `PYTEST_BODY_IN` must be present in the body of the response to an HTTP GET on `PYCHECK_BASE_URL`.
+- HTTP GET on `PYTEST_BASE_URL` must return with status code equal to 200.
+- the character string `PYTEST_BODY_IN` must be present in the body of the response to an HTTP GET on `PYTEST_BASE_URL`.
 
 ### `molecule/`
 
