@@ -15,15 +15,20 @@
     dest: "{{ temp_dir.path }}/{{ tomcat_sample_pytest_health_script_basename }}"
   changed_when: False
 
-- name: Determine the full path of {{ tomcat_sample_pytest_health_script_basename }}
+- name: Set facts related to {{ tomcat_sample_pytest_health_script_basename }}
   set_fact:
-    test_health_cmd: >
-      PYTEST_BASE_URL='http://localhost:{{ tomcat_sample_docker_container_host_port }}/{{ tomcat_sample_docker_buildarg_war_name }}'
-      PYTEST_BODY_IN='Sample "Hello, World" Application'
-      pytest '{{ temp_dir.path }}/{{ tomcat_sample_pytest_health_script_basename }}'
+    tomcat_sample_pytest_health_script_env_base_url: >-
+      http://localhost:{{ tomcat_sample_docker_container_host_port }}/{{ tomcat_sample_docker_buildarg_war_name }}
+    tomcat_sample_pytest_health_script_command: pytest {{ (temp_dir.path + '/' + tomcat_sample_pytest_health_script_basename) | quote }}
+
+- debug:
+    var: tomcat_sample_pytest_health_script_command
 
 - name: Check the application health # noqa 305
-  shell: "{{ test_health_cmd }}"
+  shell: "{{ tomcat_sample_pytest_health_script_command }}"
+  environment:
+    PYTEST_BASE_URL: "{{ tomcat_sample_pytest_health_script_env_base_url }}"
+    PYTEST_BODY_IN: "{{ tomcat_sample_pytest_health_script_env_body_in }}"
   failed_when: False
   changed_when: False
   register: res_healthy

@@ -27,7 +27,10 @@
       - "{{ tomcat_sample_docker_container_host_port }}:8080"
 
 - name: Wait {{ tomcat_sample_deployment_check_retries * tomcat_sample_deployment_check_delay }} seconds until the application is healthy # noqa 305
-  shell: "{{ test_health_cmd }} "
+  shell: "{{ tomcat_sample_pytest_health_script_command }}"
+  environment:
+    PYTEST_BASE_URL: "{{ tomcat_sample_pytest_health_script_env_base_url }}"
+    PYTEST_BODY_IN: "{{ tomcat_sample_pytest_health_script_env_body_in }}"
   retries: "{{ tomcat_sample_deployment_check_retries }}"
   delay: "{{ tomcat_sample_deployment_check_delay }}"
   register: res_healthy

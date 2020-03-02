@@ -8,5 +8,6 @@ tomcat_sample_docker_image_name_tag: "{{ role_name }}:latest"
 tomcat_sample_docker_container_name: "{{ role_name }}"
 tomcat_sample_docker_container_host_port: "8080"
 tomcat_sample_pytest_health_script_basename: test_health.py
+tomcat_sample_pytest_health_script_env_body_in: Sample "Hello, World" Application
 tomcat_sample_deployment_check_retries: 10
 tomcat_sample_deployment_check_delay: 3
