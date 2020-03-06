@@ -54,6 +54,6 @@ The launch of these tests is documented [here](README.md#via-molecule-and-docker
 
 The `site.yml` playbook is the entry point for this project. He is responsible for launching the `tomcat-sample` role.
 
-The `hosts` file is an example of invetory.
+The `hosts` file is an example of inventory.
 
 An example of the usage of these two together is documented [here](README.md#against-localhost).
