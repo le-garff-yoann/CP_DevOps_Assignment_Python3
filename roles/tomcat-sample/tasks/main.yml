@@ -21,9 +21,6 @@
       http://localhost:{{ tomcat_sample_docker_container_host_port }}/{{ tomcat_sample_docker_buildarg_war_name }}
     tomcat_sample_pytest_health_script_command: pytest {{ (temp_dir.path + '/' + tomcat_sample_pytest_health_script_basename) | quote }}
 
-- debug:
-    var: tomcat_sample_pytest_health_script_command
-
 - name: Check the application health # noqa 305
   shell: "{{ tomcat_sample_pytest_health_script_command }}"
   environment:
